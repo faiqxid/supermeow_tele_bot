@@ -3,7 +3,7 @@ import time
 import random
 import threading
 
-def claim_reward(param_claim):
+def claim_reward(param_claim, thread_id):
     headers = {
         'accept': 'application/json; indent=2',
         'accept-language': 'id-ID,id;q=0.9,en-ID;q=0.8,en;q=0.7,en-US;q=0.6',
@@ -25,14 +25,14 @@ def claim_reward(param_claim):
 
     while True:
         response = requests.post(url_claim, headers=headers).json()
-        balance = response['balance']
-        print(f'Acount: {threads} | Your Balance: {balance}')
+        balance = response.get('balance', 'N/A')
+        print(f'Account: {thread_id} | Your Balance: {balance}')
         rand_delay = random.randint(3700, 4000)
         delay = rand_delay
         for i in range(delay, 0, -1):
             minutes, seconds = divmod(i, 60)
             hours, minutes = divmod(minutes, 60)
-            print(f"Acount: {threads} | Next Claim In : {hours:02d}:{minutes:02d}:{seconds:02d}", end='\r')
+            print(f"Account: {thread_id} | Next Claim In : {hours:02d}:{minutes:02d}:{seconds:02d}", end='\r')
             time.sleep(1)
         print("\n")
 
@@ -44,8 +44,8 @@ if __name__ == "__main__":
         param_claims.append(param)
 
     threads = []
-    for param_claim in param_claims:
-        thread = threading.Thread(target=claim_reward, args=(param_claim,))
+    for i, param_claim in enumerate(param_claims):
+        thread = threading.Thread(target=claim_reward, args=(param_claim, i+1))
         threads.append(thread)
         thread.start()
 
