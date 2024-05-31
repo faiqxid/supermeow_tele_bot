@@ -3,6 +3,9 @@
 ## HOW TO USE
 
 ```bash
+apt update && apt upgrade -y
+```
+```bash
 apt install python -y
 ```
 ```bash
